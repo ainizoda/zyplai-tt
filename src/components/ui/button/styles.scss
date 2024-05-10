@@ -1,15 +1,15 @@
-@import "../../../styles/utils/variables.scss";
+@use "../../../styles/utils/variables.scss";
 
 $hoverTransition: 100ms;
 
 .Button {
   display: block;
   width: 100%;
-  padding: $fieldPadding;
-  background-color: $primary;
+  padding: variables.$fieldPadding;
+  background-color: variables.$primary;
   color: #fff;
   font-size: 1em;
-  border-radius: $fieldBorderRadius;
+  border-radius: variables.$fieldBorderRadius;
   cursor: pointer;
   transition: $hoverTransition;
 

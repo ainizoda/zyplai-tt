@@ -1,4 +1,4 @@
-@import "../../../styles/utils/variables.scss";
+@use "../../../styles/utils/variables.scss";
 
 $animation-transition: 100ms;
 
@@ -7,48 +7,48 @@ $animation-transition: 100ms;
   align-items: center;
   background-color: #272729;
   width: 100%;
-  padding: 0 $fieldPadding;
-  margin-bottom: $fieldPadding * 1.2;
-  border-radius: $fieldBorderRadius;
+  padding: 0 variables.$fieldPadding;
+  margin-bottom: variables.$fieldPadding * 1.2;
+  border-radius: variables.$fieldBorderRadius;
   position: relative;
   outline: 1px solid transparent;
 
   &.placeholderHidden {
     background-color: transparent;
-    outline-color: $secondary;
+    outline-color: variables.$secondary;
     & .label {
-      color: $secondary;
+      color: variables.$secondary;
     }
   }
 
   &.error {
-    outline-color: $error;
+    outline-color: variables.$error;
     .label {
-      color: $error;
+      color: variables.$error;
     }
   }
 
   &:hover:not(&.error) {
-    outline-color: $primary;
+    outline-color: variables.$primary;
     transition: $animation-transition;
     & .label {
-      color: $primary;
+      color: variables.$primary;
     }
   }
 
   &:focus-within {
     background-color: transparent;
-    outline-color: $primary;
+    outline-color: variables.$primary;
     outline-width: 2px;
     & .label {
-      color: $primary;
+      color: variables.$primary;
     }
   }
 
   &.error:focus-within {
-    outline-color: $error;
+    outline-color: variables.$error;
     & .label {
-      color: $error;
+      color: variables.$error;
     }
   }
 
@@ -58,7 +58,7 @@ $animation-transition: 100ms;
     background-color: inherit;
     width: 100%;
     font-size: 1em;
-    padding: $fieldPadding 0;
+    padding: variables.$fieldPadding 0;
   }
 
   & textarea {
@@ -68,25 +68,25 @@ $animation-transition: 100ms;
   & .label {
     background-color: transparent;
     transition: $animation-transition;
-    top: $fieldPadding;
+    top: variables.$fieldPadding;
     position: absolute;
-    color: $secondary;
+    color: variables.$secondary;
     display: block;
   }
 
   & input:focus + .label,
   & textarea:focus + .label,
   &.placeholderHidden .label {
-    transform: translate(-5px, -($fieldPadding + 10));
+    transform: translate(-5px, -(variables.$fieldPadding + 10));
     transition: $animation-transition;
     background-color: #1a1a1c;
     font-size: 0.8em;
-    padding: 0 calc($fieldPadding / 4);
+    padding: 0 calc(variables.$fieldPadding / 4);
   }
 }
 
 .EyeIcon {
-  padding-top: $fieldPadding / 4;
+  padding-top: variables.$fieldPadding / 4;
   padding-left: 12px;
   cursor: pointer;
 }
