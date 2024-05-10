@@ -1,9 +1,8 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Container, InputBox, Form } from "./components";
 import { useDebounce, useThrottle } from "./hooks";
 
 import "./App.scss";
-import { AnyFunc } from "./hooks/types";
 
 function App() {
   const [deboundVal, setDeboundVal] = useState("");
