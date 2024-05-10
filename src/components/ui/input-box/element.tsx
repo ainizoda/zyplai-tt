@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState } from "react";
+import { FC, useMemo, useRef, useState, memo } from "react";
 import cls from "classnames";
 import { v4 as generateUUID } from "uuid";
 
