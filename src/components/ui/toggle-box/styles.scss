@@ -1,0 +1,42 @@
+$size: 40px;
+
+.main {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  box-sizing: border-box;
+  cursor: default;
+
+  & .ToggleBox {
+    transition: 200ms;
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(125%);
+    }
+
+    &_active {
+      background-color: #1373e7;
+      & .toggler {
+        transform: translateX($size/2);
+      }
+    }
+    display: flex;
+    align-items: center;
+    background-color: #2e2e30;
+    width: $size;
+    height: ($size/2) + 2;
+    border-radius: $size - ($size/10);
+
+    & .toggler {
+      width: $size/2;
+      height: $size/2;
+      background-color: #ddd;
+      border-radius: 50%;
+      transition: 200ms;
+    }
+  }
+  & .label {
+    color: #bbb;
+  }
+}

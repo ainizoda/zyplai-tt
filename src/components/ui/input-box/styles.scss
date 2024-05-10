@@ -1,0 +1,92 @@
+@import "../../../styles/utils/variables.scss";
+
+$animation-transition: 100ms;
+
+.InputBox {
+  display: flex;
+  align-items: center;
+  background-color: #272729;
+  width: 100%;
+  padding: 0 $fieldPadding;
+  margin-bottom: $fieldPadding * 1.2;
+  border-radius: $fieldBorderRadius;
+  position: relative;
+  outline: 1px solid transparent;
+
+  &.placeholderHidden {
+    background-color: transparent;
+    outline-color: $secondary;
+    & .label {
+      color: $secondary;
+    }
+  }
+
+  &.error {
+    outline-color: $error;
+    .label {
+      color: $error;
+    }
+  }
+
+  &:hover:not(&.error) {
+    outline-color: $primary;
+    transition: $animation-transition;
+    & .label {
+      color: $primary;
+    }
+  }
+
+  &:focus-within {
+    background-color: transparent;
+    outline-color: $primary;
+    outline-width: 2px;
+    & .label {
+      color: $primary;
+    }
+  }
+
+  &.error:focus-within {
+    outline-color: $error;
+    & .label {
+      color: $error;
+    }
+  }
+
+  & input,
+  & textarea {
+    color: #fff;
+    background-color: inherit;
+    width: 100%;
+    font-size: 1em;
+    padding: $fieldPadding 0;
+  }
+
+  & textarea {
+    height: 84px;
+  }
+
+  & .label {
+    background-color: transparent;
+    transition: $animation-transition;
+    top: $fieldPadding;
+    position: absolute;
+    color: $secondary;
+    display: block;
+  }
+
+  & input:focus + .label,
+  & textarea:focus + .label,
+  &.placeholderHidden .label {
+    transform: translate(-5px, -($fieldPadding + 10));
+    transition: $animation-transition;
+    background-color: #1a1a1c;
+    font-size: 0.8em;
+    padding: 0 calc($fieldPadding / 4);
+  }
+}
+
+.EyeIcon {
+  padding-top: $fieldPadding / 4;
+  padding-left: 12px;
+  cursor: pointer;
+}

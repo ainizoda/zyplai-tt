@@ -1,24 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { Container, InputBox, Form } from "./components";
+import { useDebounce, useThrottle } from "./hooks";
+
+import "./App.scss";
 
 function App() {
+  const [deboundVal, setDeboundVal] = useState("");
+  const debounce = useDebounce(setDeboundVal, 400);
+
+  const [throttledVal, setThrottledVal] = useState("");
+  const throttle = useThrottle(setThrottledVal, 400);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Container className="centered push">
+        <InputBox
+          placeholder="debounce test"
+          onChange={(e) => {
+            debounce(e.target.value);
+          }}
+        />
+        <InputBox
+          placeholder="throttle test"
+          onChange={(e) => {
+            throttle(e.target.value);
+          }}
+        />
+        <div className="push">Debounce: {deboundVal}</div>
+        <div>Throttle: {throttledVal}</div>
+      </Container>
+
+      <div className="centered">
+        <Form />
+      </div>
     </div>
   );
 }

@@ -1,0 +1,23 @@
+@import "../../../styles/utils/variables.scss";
+
+$hoverTransition: 100ms;
+
+.Button {
+  display: block;
+  width: 100%;
+  padding: $fieldPadding;
+  background-color: $primary;
+  color: #fff;
+  font-size: 1em;
+  border-radius: $fieldBorderRadius;
+  cursor: pointer;
+  transition: $hoverTransition;
+
+  &:hover {
+    filter: brightness(125%);
+    transition: $hoverTransition;
+  }
+  &:active {
+    filter: brightness(150%);
+  }
+}
