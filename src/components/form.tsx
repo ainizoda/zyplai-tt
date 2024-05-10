@@ -1,6 +1,7 @@
 import { FC, useCallback, useState } from "react";
 import { Button, Container, InputBox, ToggleBox } from "./ui";
 import { EyeIcon } from "./icons";
+import { useDebounce } from "../hooks";
 
 interface FormVal {
   email: string;
@@ -31,6 +32,41 @@ export const Form: FC = () => {
     // you can submit data now
   };
 
+  const validateForm = (): boolean => {
+    for (const field in formVal) {
+      let value = formVal[field as keyof typeof formVal];
+
+      if (typeof value !== "boolean") {
+        checkValidity(field, value!);
+      }
+    }
+
+    for (const field in errors) {
+      if (errors[field as keyof typeof errors]) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const checkValidity = (fieldName: string, value: string) => {
+    const errorsCopy: Record<string, string | boolean> = { ...errors };
+
+    const validationMap: Record<string, () => boolean | string> = {
+      email: () => !/(^\w.*@\w+\.\w)/.test(value) && "Введите почту правильно",
+      repeatPassword: () => formVal.password !== value && "Пароли не совпадают",
+      default: () => value.trim().length === 0 && `${fieldName} обязательна`,
+    };
+
+    const validate = validationMap[fieldName] || validationMap.default || "";
+    errorsCopy[fieldName] = validate();
+
+    setErrors(errorsCopy);
+  };
+
+  const deboundCheckValidity = useDebounce(checkValidity, 300);
+
   const handleChange = useCallback(
     (
       name: string,
@@ -43,52 +79,20 @@ export const Form: FC = () => {
         value = event.target.value;
       }
       setFormVal((prev) => ({ ...prev, [name]: value }));
+
+      if (typeof value !== "boolean") {
+        deboundCheckValidity(name, value);
+      }
     },
-    []
+    [deboundCheckValidity]
   );
-
-  const validateForm = (): boolean => {
-    const errors: Record<string, string> = {};
-
-    for (const field in formVal) {
-      const value = formVal[field as keyof typeof formVal];
-
-      if (typeof value === "boolean") continue;
-
-      if (!value || value.trim().length === 0) {
-        errors[field] = `${field} обязательна`;
-        setErrors(errors);
-        return false;
-      }
-
-      if (field === "email") {
-        const emailRegex = /(.+)@(.+){2,}\.(.+){2,}/;
-
-        if (!emailRegex.test(formVal.email)) {
-          errors.email = "Введите почту правильно";
-          setErrors(errors);
-          return false;
-        }
-      }
-
-      errors[field] = "";
-    }
-
-    if (formVal.password !== formVal.repeatPassword) {
-      errors.repeatPassword = "Пароли не совпадают";
-      setErrors(errors);
-      return false;
-    }
-
-    setErrors(errors);
-    return true;
-  };
 
   const [passwordHidden, setPasswordHidden] = useState(true);
 
   const togglePasswordVisibility = () => {
     setPasswordHidden((prev) => !prev);
   };
+
   return (
     <Container className="centered">
       <form onSubmit={handleSubmit} noValidate>

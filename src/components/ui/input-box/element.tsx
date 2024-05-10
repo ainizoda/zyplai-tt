@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState, memo } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 import cls from "classnames";
 import { v4 as generateUUID } from "uuid";
 
@@ -57,6 +57,7 @@ export const InputBox: FC<Props> = ({
       increaseHeight();
     }
   };
+  console.log(error)
   return (
     <div
       className={cls("InputBox", className, {
