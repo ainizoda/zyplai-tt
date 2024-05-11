@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Button, Container, InputBox, ToggleBox } from "./ui";
 import { EyeIcon } from "./icons";
 import { useDebounce } from "../hooks";
@@ -35,9 +35,11 @@ export const Form: FC = () => {
   const validateForm = (): boolean => {
     for (const field in formVal) {
       let value = formVal[field as keyof typeof formVal];
-
       if (typeof value !== "boolean") {
-        checkValidity(field, value!);
+        const isValid = checkValidity(field, value);
+        if (!isValid) {
+          break;
+        }
       }
     }
 
@@ -50,20 +52,29 @@ export const Form: FC = () => {
     return true;
   };
 
-  const checkValidity = (fieldName: string, value: string) => {
+  const checkValidity = (
+    fieldName: string,
+    value: string | undefined = ""
+  ): boolean => {
     const errorsCopy: Record<string, string | boolean> = { ...errors };
 
     const validationMap: Record<string, () => boolean | string> = {
       email: () => !/(^\w.*@\w+\.\w)/.test(value) && "Введите почту правильно",
       repeatPassword: () => formVal.password !== value && "Пароли не совпадают",
-      default: () => value.trim().length === 0 && `${fieldName} обязательна`,
+      checkLength: () =>
+        value.trim().length === 0 && `${fieldName} обязательна`,
     };
 
-    const validate = validationMap[fieldName] || validationMap.default || "";
-    errorsCopy[fieldName] = validate();
-
+    const validate = validationMap[fieldName];
+    errorsCopy[fieldName] = validate?.() || validationMap.checkLength() || "";
     setErrors(errorsCopy);
+
+    return errorsCopy[fieldName] === "";
   };
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   const deboundCheckValidity = useDebounce(checkValidity, 300);
 

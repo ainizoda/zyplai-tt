@@ -57,7 +57,6 @@ export const InputBox: FC<Props> = ({
       increaseHeight();
     }
   };
-  console.log(error)
   return (
     <div
       className={cls("InputBox", className, {
