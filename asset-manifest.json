@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/zyplai-tt/static/css/main.34e407b8.css",
-    "main.js": "/zyplai-tt/static/js/main.cd3ccba7.js",
+    "main.css": "/zyplai-tt/static/css/main.03e6cbad.css",
+    "main.js": "/zyplai-tt/static/js/main.83664982.js",
     "index.html": "/zyplai-tt/index.html",
-    "main.34e407b8.css.map": "/zyplai-tt/static/css/main.34e407b8.css.map",
-    "main.cd3ccba7.js.map": "/zyplai-tt/static/js/main.cd3ccba7.js.map"
+    "main.03e6cbad.css.map": "/zyplai-tt/static/css/main.03e6cbad.css.map",
+    "main.83664982.js.map": "/zyplai-tt/static/js/main.83664982.js.map"
   },
   "entrypoints": [
-    "static/css/main.34e407b8.css",
-    "static/js/main.cd3ccba7.js"
+    "static/css/main.03e6cbad.css",
+    "static/js/main.83664982.js"
   ]
 }
