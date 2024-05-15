@@ -1,13 +1,13 @@
 $size: 40px;
 
-.main {
+.ToggleBox {
   display: flex;
   width: 100%;
   gap: 12px;
   box-sizing: border-box;
   cursor: default;
 
-  & .ToggleBox {
+  & .toggler {
     transition: 200ms;
     cursor: pointer;
 
@@ -15,12 +15,13 @@ $size: 40px;
       filter: brightness(125%);
     }
 
-    &_active {
+    &.on {
       background-color: #1373e7;
-      & .toggler {
+      &::before {
         transform: translateX($size/2);
       }
     }
+
     display: flex;
     align-items: center;
     background-color: #2e2e30;
@@ -28,7 +29,8 @@ $size: 40px;
     height: ($size/2) + 2;
     border-radius: $size - ($size/10);
 
-    & .toggler {
+    &::before {
+      content: "";
       width: $size/2;
       height: $size/2;
       background-color: #ddd;

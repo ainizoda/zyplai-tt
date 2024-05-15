@@ -2,6 +2,8 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { Button, Container, InputBox, ToggleBox } from "./ui";
 import { EyeIcon } from "./icons";
 import { useDebounce } from "../hooks";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 interface FormVal {
   email: string;
@@ -11,122 +13,76 @@ interface FormVal {
   rememberMe: boolean;
 }
 
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Введите почту правильно")
+    .required("Обязательное поле"),
+  description: yup.string().required("Обязательное поле"),
+  password: yup.string().required("Обязательное поле"),
+  repeatPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "Пароли не совпадают")
+    .required("Обязательное поле"),
+});
+
 export const Form: FC = () => {
-  const [formVal, setFormVal] = useState<FormVal>({
-    email: "",
-    description: "",
-    password: "",
-    repeatPassword: "",
-    rememberMe: false,
-  });
-  const [errors, setErrors] = useState<Partial<Exclude<FormVal, "rememberMe">>>(
-    {}
-  );
-
-  const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-    // you can submit data now
-  };
-
-  const validateForm = (): boolean => {
-    for (const field in formVal) {
-      let value = formVal[field as keyof typeof formVal];
-      if (typeof value !== "boolean") {
-        const isValid = checkValidity(field, value);
-        if (!isValid) {
-          break;
-        }
-      }
-    }
-
-    for (const field in errors) {
-      if (errors[field as keyof typeof errors]) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const checkValidity = (
-    fieldName: string,
-    value: string | undefined = ""
-  ): boolean => {
-    const errorsCopy: Record<string, string | boolean> = { ...errors };
-
-    const validationMap: Record<string, () => boolean | string> = {
-      email: () => !/(^\w.*@\w+\.\w)/.test(value) && "Введите почту правильно",
-      repeatPassword: () => formVal.password !== value && "Пароли не совпадают",
-      checkLength: () =>
-        value.trim().length === 0 && `${fieldName} обязательна`,
-    };
-
-    const validate = validationMap[fieldName];
-    errorsCopy[fieldName] = validate?.() || validationMap.checkLength() || "";
-    setErrors(errorsCopy);
-
-    return errorsCopy[fieldName] === "";
-  };
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
-
-  const deboundCheckValidity = useDebounce(checkValidity, 300);
-
-  const handleChange = useCallback(
-    (
-      name: string,
-      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | boolean
-    ) => {
-      let value: string | boolean;
-      if (typeof event === "boolean") {
-        value = event;
-      } else {
-        value = event.target.value;
-      }
-      setFormVal((prev) => ({ ...prev, [name]: value }));
-
-      if (typeof value !== "boolean") {
-        deboundCheckValidity(name, value);
-      }
+  const formik = useFormik<FormVal>({
+    validationSchema: schema,
+    validateOnBlur: true,
+    initialValues: {
+      email: "",
+      description: "",
+      password: "",
+      repeatPassword: "",
+      rememberMe: false,
     },
-    [deboundCheckValidity]
-  );
+    onSubmit(values) {},
+  });
 
   const [passwordHidden, setPasswordHidden] = useState(true);
+  const [errors, setErrors] = useState({});
 
   const togglePasswordVisibility = () => {
     setPasswordHidden((prev) => !prev);
   };
 
+  const getError = (field: keyof FormVal) => {
+    return formik.touched[field] ? formik.errors[field] : "";
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    formik.handleChange(e);
+  };
   return (
     <Container className="centered">
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={formik.handleSubmit} noValidate>
         <InputBox
           placeholder="Эл. почта"
           type="email"
-          error={errors.email}
-          onChange={handleChange.bind(null, "email")}
-          value={formVal.email}
+          error={getError("email")}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.email}
+          name="email"
         />
         <InputBox
           placeholder="Описание"
-          error={errors.description}
+          error={getError("description")}
           autoGrow
-          onChange={handleChange.bind(null, "description")}
-          value={formVal.description}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.description}
+          name="description"
         />
         <InputBox
           type={passwordHidden ? "password" : "text"}
           placeholder="Пароль"
-          error={errors.password}
-          onChange={handleChange.bind(null, "password")}
-          value={formVal.password}
+          error={getError("password")}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
+          name="password"
           icon={
             <EyeIcon
               onClick={togglePasswordVisibility}
@@ -138,15 +94,17 @@ export const Form: FC = () => {
         <InputBox
           type={passwordHidden ? "password" : "text"}
           placeholder="Подтвердите пароль"
-          error={errors.repeatPassword}
-          onChange={handleChange.bind(null, "repeatPassword")}
-          value={formVal.repeatPassword}
+          error={getError("repeatPassword")}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.repeatPassword}
+          name="repeatPassword"
         />
         <ToggleBox
           className="push"
           label="Запомнить сессию"
-          onChange={(value) => handleChange("rememberMe", value)}
-          active={formVal.rememberMe}
+          onChange={(value) => formik.setFieldValue("rememberMe", value)}
+          active={formik.values.rememberMe}
         />
         <Button type="submit">Подтвердить</Button>
       </form>

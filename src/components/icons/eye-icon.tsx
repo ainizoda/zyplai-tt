@@ -79,7 +79,7 @@ type Props = Partial<IconProps> & {
 export const EyeIcon: FC<Props> = ({
   hidden = true,
   size = 24,
-  color = "#ffffff70",
+  color = "#949494",
   className,
   onClick,
 }) => {

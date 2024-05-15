@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import cls from "classnames";
 
 import "./styles.scss";
@@ -16,22 +16,46 @@ export const ToggleBox: FC<Props> = ({
   className,
 }) => {
   const [isActive, setIsActive] = useState(active);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const toggleRef = useRef<HTMLDivElement>(null);
+
   const toggle = () => {
     setIsActive((prev) => {
       onChange?.(!prev);
       return !prev;
     });
   };
+
+  const handleMouseMove = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    if (isDragging) {
+      const box = toggleRef.current!.getBoundingClientRect();
+      const togglePosition = Math.min(
+        Math.max(0, event.clientX - box.left),
+        box.left + box.width
+      );
+      const isActive = togglePosition > box.width / 2;
+      setIsActive(isActive);
+      onChange?.(isActive);
+    }
+  };
+
   return (
-    <div className={cls("main", className)}>
+    <div
+      className={cls("ToggleBox", className)}
+      onMouseMove={handleMouseMove}
+      onMouseDown={() => setIsDragging(true)}
+      onMouseUp={() => setIsDragging(false)}
+    >
       <div
-        className={cls("ToggleBox", {
-          ToggleBox_active: isActive,
+        className={cls("toggler", {
+          on: isActive,
         })}
         onClick={toggle}
-      >
-        <div className="toggler"></div>
-      </div>
+        ref={toggleRef}
+      ></div>
       <div className="label">{label}</div>
     </div>
   );

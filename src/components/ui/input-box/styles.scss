@@ -13,16 +13,7 @@ $animation-transition: 100ms;
   position: relative;
   outline: 1px solid transparent;
 
-  &.placeholderHidden {
-    background-color: transparent;
-    outline-color: variables.$secondary;
-    & .label {
-      color: variables.$secondary;
-    }
-  }
-
   &.error {
-    outline-color: variables.$error;
     .label {
       color: variables.$error;
     }
@@ -36,12 +27,41 @@ $animation-transition: 100ms;
     }
   }
 
+  &:has(input:not(:placeholder-shown), textarea:not(:placeholder-shown)) {
+    &.error {
+      background-color: transparent;
+      outline-color: variables.$error;
+    }
+    &:not(:focus-within, .error) {
+      background-color: transparent;
+      outline-color: variables.$secondary;
+      & .label {
+        color: variables.$secondary;
+      }
+    }
+  }
+
   &:focus-within {
     background-color: transparent;
     outline-color: variables.$primary;
     outline-width: 2px;
     & .label {
       color: variables.$primary;
+    }
+  }
+
+  input,
+  textarea {
+    &:focus,
+    &:not(:placeholder-shown),
+    &:-webkit-autofill {
+      & + label {
+        transform: translate(-5px, -(variables.$fieldPadding + 10));
+        transition: $animation-transition;
+        background-color: #1a1a1c;
+        font-size: 0.8em;
+        padding: 0 calc(variables.$fieldPadding / 4);
+      }
     }
   }
 
@@ -72,16 +92,6 @@ $animation-transition: 100ms;
     position: absolute;
     color: variables.$secondary;
     display: block;
-  }
-
-  & input:focus + .label,
-  & textarea:focus + .label,
-  &.placeholderHidden .label {
-    transform: translate(-5px, -(variables.$fieldPadding + 10));
-    transition: $animation-transition;
-    background-color: #1a1a1c;
-    font-size: 0.8em;
-    padding: 0 calc(variables.$fieldPadding / 4);
   }
 }
 

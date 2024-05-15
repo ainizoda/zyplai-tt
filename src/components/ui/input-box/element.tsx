@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState } from "react";
+import { FC, useMemo, useRef } from "react";
 import cls from "classnames";
 import { v4 as generateUUID } from "uuid";
 
@@ -33,9 +33,10 @@ export const InputBox: FC<Props> = ({
   error,
   icon,
   autoGrow = false,
+  value,
+  name,
   ...props
 }) => {
-  const [placeholderHidden, setPlaceholderHidden] = useState(false);
   const fieldRef = useRef<HTMLTextAreaElement>(null);
 
   const fieldId = useMemo(() => id || generateUUID(), [id]);
@@ -48,9 +49,8 @@ export const InputBox: FC<Props> = ({
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { value, tagName } = event.target;
+    const { tagName } = event.target;
 
-    setPlaceholderHidden(value.length !== 0);
     onChange?.(event);
 
     if (tagName === "TEXTAREA") {
@@ -60,7 +60,6 @@ export const InputBox: FC<Props> = ({
   return (
     <div
       className={cls("InputBox", className, {
-        placeholderHidden,
         error: Boolean(error?.length),
       })}
     >
@@ -70,13 +69,19 @@ export const InputBox: FC<Props> = ({
           onChange={handleChange}
           ref={fieldRef}
           id={fieldId}
-        ></textarea>
+          placeholder="&nbsp;"
+          value={value}
+          name={name}
+        />
       ) : (
         <input
           className={inputClassName}
           onChange={handleChange}
           type={type}
           id={fieldId}
+          placeholder="&nbsp;"
+          value={value}
+          name={name}
           {...props}
         />
       )}
